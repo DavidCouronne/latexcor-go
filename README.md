@@ -15,9 +15,14 @@
 
 Choisissez la méthode correspondant à votre système pour installer `latexcor` dans `/usr/local/bin`.
 
-### macOS (Intel & Apple Silicon)
+### macOS (Apple Silicon - M1/M2/M3)
 ```bash
-sudo curl -L https://github.com/DavidCouronne/latexcor-go/releases/latest/download/latexcor-macos -o /usr/local/bin/latexcor && sudo chmod +x /usr/local/bin/latexcor
+sudo curl -L https://github.com/DavidCouronne/latexcor-go/releases/latest/download/latexcor-macos-arm64 -o /usr/local/bin/latexcor && sudo chmod +x /usr/local/bin/latexcor
+```
+
+### macOS (Intel)
+```bash
+sudo curl -L https://github.com/DavidCouronne/latexcor-go/releases/latest/download/latexcor-macos-intel -o /usr/local/bin/latexcor && sudo chmod +x /usr/local/bin/latexcor
 ```
 
 ### Linux (x86_64)
