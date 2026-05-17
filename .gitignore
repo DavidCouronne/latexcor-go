@@ -20,7 +20,6 @@ _minted-*/
 
 # Go
 vendor/
-go.sum
 
 # OS
 .DS_Store
