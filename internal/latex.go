@@ -22,7 +22,10 @@ func GetMainTexFiles(dir string) ([]string, error) {
 			if err != nil {
 				return nil // Ignorer les fichiers illisibles
 			}
-			if strings.Contains(string(content), "\\begin{document}") {
+			contentStr := string(content)
+			if strings.Contains(contentStr, "\\documentclass") &&
+				strings.Contains(contentStr, "\\begin{document}") &&
+				strings.Contains(contentStr, "\\end{document}") {
 				files = append(files, path)
 			}
 		}
@@ -37,13 +40,15 @@ func CleanAux(dir string, extensions []string, paths []string) error {
 		if err != nil {
 			return err
 		}
-		
+
 		base := info.Name()
 
 		// Vérifier si c'est un dossier à supprimer
 		if info.IsDir() {
 			for _, p := range paths {
-				if strings.Contains(base, p) {
+				// Gestion des wildcards simples comme _minted-*
+				match, _ := filepath.Match(p, base)
+				if match || strings.Contains(base, p) {
 					os.RemoveAll(path)
 					return filepath.SkipDir
 				}
@@ -59,30 +64,42 @@ func CleanAux(dir string, extensions []string, paths []string) error {
 				break
 			}
 		}
-		
+
 		return nil
 	})
 }
 
-// ExtractErrors extrait les erreurs d'un fichier .log
+// ExtractErrors extrait les blocs d'erreurs d'un fichier .log (approche plus robuste par blocs)
 func ExtractErrors(logPath string) []string {
-	file, err := os.Open(logPath)
+	content, err := os.ReadFile(logPath)
 	if err != nil {
 		return nil
 	}
-	defer file.Close()
 
-	var errors []string
-	scanner := bufio.NewScanner(file)
-	// Regex simple pour les erreurs LaTeX
-	re := regexp.MustCompile(`^! (.*)`)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if matches := re.FindStringSubmatch(line); len(matches) > 1 {
-			errors = append(errors, matches[1])
+	// Regex pour capturer le bloc d'erreur commençant par ! et finissant par l.ligne
+	// Similaire à la logique Python: !(.*?)\n(?:l\.\d+.*?)(?=\n\n|\Z)
+	re := regexp.MustCompile(`(?s)! (.*?)\nl\.\d+.*?(?:\n\n|\z)`)
+	matches := re.FindAllString(string(content), -1)
+
+	if len(matches) == 0 {
+		// Fallback sur une détection ligne par ligne si le bloc n'est pas trouvé
+		var errors []string
+		scanner := bufio.NewScanner(strings.NewReader(string(content)))
+		for scanner.Scan() {
+			line := scanner.Text()
+			if strings.HasPrefix(line, "! ") {
+				errors = append(errors, line)
+			}
 		}
+		return errors
 	}
-	return errors
+
+	var cleanedMatches []string
+	for _, m := range matches {
+		cleanedMatches = append(cleanedMatches, strings.TrimSpace(m))
+	}
+
+	return cleanedMatches
 }
 
 // RunTwoPasses exécute deux passes de compilation pour un fichier
