@@ -3,9 +3,9 @@ package internal
 import (
 	"fmt"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strings"
-	"path/filepath"
 )
 
 // IsPodmanInstalled vérifie la présence du binaire podman
@@ -41,11 +41,22 @@ func BuildCommand(image, engine, texFile string) *exec.Cmd {
 	if err != nil {
 		absPath = "."
 	}
-	
+
 	fileName := filepath.Base(texFile)
-	
-	volumeMapping := fmt.Sprintf("%s:/data", absPath)
-	
+
+	// Gestion du volume mapping pour Windows
+	volumePath := absPath
+	if runtime.GOOS == "windows" {
+		// Conversion C:\foo -> /c/foo
+		volumePath = strings.ReplaceAll(volumePath, "\\", "/")
+		if len(volumePath) > 1 && volumePath[1] == ':' {
+			drive := strings.ToLower(string(volumePath[0]))
+			volumePath = "/" + drive + volumePath[2:]
+		}
+	}
+
+	volumeMapping := fmt.Sprintf("%s:/data", volumePath)
+
 	args := []string{
 		"run", "-i", "--rm",
 		"-v", volumeMapping,
@@ -56,7 +67,7 @@ func BuildCommand(image, engine, texFile string) *exec.Cmd {
 	}
 
 	args = append(args, image, engine, "-interaction=nonstopmode", "-shell-escape", fileName)
-	
+
 	cmd := exec.Command("podman", args...)
 	cmd.Dir = absPath
 	return cmd
