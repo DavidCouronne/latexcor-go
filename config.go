@@ -1,7 +1,7 @@
 package main
 
 const (
-	ContainerImage = "infocornouaille/tools:perso"
+	ContainerImage = "docker.io/infocornouaille/tools:perso"
 	DefaultEngine  = "xelatex"
 )
 
