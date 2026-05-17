@@ -1,0 +1,26 @@
+# Binaires
+latexcor
+latexcore
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# LaTeX (fichiers générés)
+*.aux
+*.log
+*.toc
+*.out
+*.pdf
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+_minted-*/
+
+# Go
+vendor/
+go.sum
+
+# OS
+.DS_Store
