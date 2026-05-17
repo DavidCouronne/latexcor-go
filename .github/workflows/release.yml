@@ -47,6 +47,6 @@ jobs:
           prerelease: false
           make_latest: true
           generate_release_notes: true
-          tag_name: ${{ github.ref_name }} # Utilise le nom du tag ou de la branche
+          tag_name: ${{ github.ref_name }}-${{ github.run_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
