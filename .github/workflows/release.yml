@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch: # Permet le lancement manuel depuis l'onglet Actions
 
 permissions:
   contents: write
