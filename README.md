@@ -17,12 +17,12 @@ Choisissez la méthode correspondant à votre système pour installer `latexcor`
 
 ### macOS (Intel & Apple Silicon)
 ```bash
-sudo curl -L https://github.com/votre-repo/latexcor/releases/latest/download/latexcor-macos -o /usr/local/bin/latexcor && sudo chmod +x /usr/local/bin/latexcor
+sudo curl -L https://github.com/DavidCouronne/latexcor-go/releases/latest/download/latexcor-macos -o /usr/local/bin/latexcor && sudo chmod +x /usr/local/bin/latexcor
 ```
 
 ### Linux (x86_64)
 ```bash
-sudo curl -L https://github.com/votre-repo/latexcor/releases/latest/download/latexcor-linux -o /usr/local/bin/latexcor && sudo chmod +x /usr/local/bin/latexcor
+sudo curl -L https://github.com/DavidCouronne/latexcor-go/releases/latest/download/latexcor-linux -o /usr/local/bin/latexcor && sudo chmod +x /usr/local/bin/latexcor
 ```
 
 > **Note** : Vous devez avoir **Podman** installé. Sur macOS : `brew install podman`.
